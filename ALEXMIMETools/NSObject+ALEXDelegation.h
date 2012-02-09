@@ -10,4 +10,14 @@
 
 @interface NSObject (ALEXDelegation)
 
+
+@end
+
+
+@protocol ALEXDelegation <NSObject>
+/*
+
+- (id) ALEXDelegation_delegate;
+- (Protocol*) ALEXDelegation_delegateProtocol;
+*/
 @end

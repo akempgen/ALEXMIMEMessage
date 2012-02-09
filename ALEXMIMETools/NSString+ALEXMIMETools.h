@@ -10,4 +10,8 @@
 
 @interface NSString (ALEXMIMETools)
 
+- (NSDictionary*) ALEXMIMETools_headerFields;
+- (NSString*) ALEXMIMETools_firstValueInHeaderField;
+- (NSString*) ALEXMIMETools_valueInHeaderFieldForKey:(NSString*)key;
+
 @end

@@ -19,8 +19,8 @@
 
 
 
-- (void) ALEXMIMEParserDelegate_didStartDocument;
-- (void) ALEXMIMEParserDelegate_didEndDocument;
+- (void) ALEXMIMEParserDelegate_didStartEntity;
+- (void) ALEXMIMEParserDelegate_didEndEntity;
 - (void) ALEXMIMEParserDelegate_foundHeaderSection:(NSDictionary*)headerSection;
 - (void) ALEXMIMEParserDelegate_foundBody:(NSData *)body;
 - (void) ALEXMIMEParserDelegate_foundPreamble:(NSData *)preamble;
@@ -59,7 +59,7 @@
 
 - (BOOL) parse
 {
-	[self ALEXMIMEParserDelegate_didStartDocument];
+	[self ALEXMIMEParserDelegate_didStartEntity];
 	
 	NSData* data = self.data;
 	NSUInteger location = 0;
@@ -107,28 +107,24 @@
 		//multipart/related; type="text/xml"; start="<4C63F0A0988D8EFCCA90038F5E981D5F>"; 	boundary="----=_Part_23_1584902333.1316137295808"
 		
 		
-		NSString *boundary		= [contentType ALEXMIMETools_valueInHeaderFieldForKey:@"boundary"];
-		[boundary dataUsingEncoding:<#(NSStringEncoding)#>
+		NSString *boundary		= [contentType ALEXMIMETools_valueInHeaderFieldForKey:@"boundary"];		
 		
-		
-		char newline[] = "\r\n";
-		char doubleDash[] = "--";
-		NSData *encapsulationBoundary = [NSString stringWithFormat:@"%@--%@", crlf, boundary];
+		NSString *encapsulationBoundary = [ALEXMIMETools_CRLF ALEXMIMETools_DoubleDash stringByAppendingString:boundary];
 		
 		
 	}
 	
-	[self ALEXMIMEParserDelegate_didEndDocument];
+	[self ALEXMIMEParserDelegate_didEndEntity];
 	
 	return YES;
 }
 
 #pragma mark - Class Extension
 
-- (void) ALEXMIMEParserDelegate_didStartDocument
+- (void) ALEXMIMEParserDelegate_didStartEntity
 {
-	if ( [self.delegate respondsToSelector:@selector(parserDidStartDocument:)] )
-		[self.delegate parserDidStartDocument:self];
+	if ( [self.delegate respondsToSelector:@selector(parserDidStartEntity::)] )
+		[self.delegate parserDidStartEntity:self];
 	
 	/*
 	SEL delegateSelector = @selector(parserDidStartDocument:);
@@ -142,10 +138,10 @@
 	*/
 }
 
-- (void) ALEXMIMEParserDelegate_didEndDocument
+- (void) ALEXMIMEParserDelegate_didEndEntity
 {
-	if ( [self.delegate respondsToSelector:@selector(parserDidEndDocument:)] )
-		[self.delegate parserDidEndDocument:self];
+	if ( [self.delegate respondsToSelector:@selector(parserDidEndEntity::)] )
+		[self.delegate parserDidEndEntity:self];
 }
 
 - (void) ALEXMIMEParserDelegate_foundHeader:(NSDictionary*)header

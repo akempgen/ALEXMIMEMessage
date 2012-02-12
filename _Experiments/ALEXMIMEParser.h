@@ -35,7 +35,10 @@
 - (void) parserDidStartEntity:(ALEXMIMEParser *)parser;
 - (void) parserDidEndEntity:(ALEXMIMEParser *)parser;
 
-- (void) parser:(ALEXMIMEParser *)parser foundHeader:(NSDictionary *)header;
+- (void) parserDidStartHeaderSection:(ALEXMIMEParser *)parser;
+- (void) parserDidEndHeaderSection:(ALEXMIMEParser *)parser;
+
+- (void) parser:(ALEXMIMEParser *)parser foundHeaderSection:(NSDictionary *)header;
 
 // Single-Part Messages
 - (void) parser:(ALEXMIMEParser *)parser foundBody:(NSData *)body;

@@ -10,7 +10,8 @@
 #define ALEXMIMETools_ALEXMIMEDefinitions_h
 
 #define ALEXMIMETools_CRLF			@"\r\n"
-#define ALEXMIMETools_DoubleDash	@"--"
+#define ALEXMIMETools_Colon			@":"
+#define ALEXMIMETools_DoubleHyphen	@"--"
 
 
 #endif

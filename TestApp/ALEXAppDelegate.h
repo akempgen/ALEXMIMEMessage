@@ -8,8 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface ALEXAppDelegate : NSObject <NSApplicationDelegate>
 
-@property (assign) IBOutlet NSWindow *window;
+
+@interface ALEXAppDelegate : NSObject <NSApplicationDelegate, NSURLConnectionDelegate>
+
 
 @end

@@ -12,6 +12,7 @@
 #import "NSString+ALEXMIMETools.h"
 
 
+
 @interface ALEXMIMEParser ()
 
 @property (nonatomic, copy) NSDictionary* headerSection;
@@ -21,6 +22,8 @@
 
 - (void) ALEXMIMEParserDelegate_didStartEntity;
 - (void) ALEXMIMEParserDelegate_didEndEntity;
+- (void) ALEXMIMEParserDelegate_didStartHeaderSection;
+- (void) ALEXMIMEParserDelegate_didEndHeaderSection;
 - (void) ALEXMIMEParserDelegate_foundHeaderSection:(NSDictionary*)headerSection;
 - (void) ALEXMIMEParserDelegate_foundBody:(NSData *)body;
 - (void) ALEXMIMEParserDelegate_foundPreamble:(NSData *)preamble;
@@ -61,7 +64,15 @@
 {
 	[self ALEXMIMEParserDelegate_didStartEntity];
 	
+	/*
+	NSString* testString = [[NSString alloc] initWithData:self.data encoding:NSASCIIStringEncoding];
+	ALEXLog(@"test:\n%@", [testString componentsSeparatedByString:@"\r\n"]);
+	*/
+	
+	NSCharacterSet *wsCS = [NSCharacterSet whitespaceCharacterSet];
+	
 	NSData* data = self.data;
+	NSUInteger dataLength = [data length];
 	NSUInteger location = 0;
 	
 	NSDictionary *headerSection = self.headerSection;
@@ -69,15 +80,109 @@
 	
 	if ( headerSection )
 	{
-		bodyRange = NSMakeRange(0, [data length]);
+		bodyRange = NSMakeRange(0, dataLength);
 	}
 	else
 	{
+		[self ALEXMIMEParserDelegate_didStartHeaderSection];
+		
+		NSMutableArray *unfoldedHeaderFields = [NSMutableArray array];
+		
+		
+		while ( location < dataLength )
+		{
+			NSUInteger lineBeginning = location;
+			
+			
+			
+			NSRange range = NSMakeRange(location, dataLength-location);
+			NSRange crlfRange = [data rangeOfData:[NSData dataWithBytes:"\r\n" length:2] options:0 range:range];
+			
+			//ALEXLog(@"range: location %u length %u", range.location, range.length);
+			//ALEXLog(@"crlfRange: location %u length %u", crlfRange.location, crlfRange.length);
+			
+			if ( crlfRange.location == NSNotFound )
+			{
+				ALEXLog(@"not found");
+				break;
+			}
+			
+			
+			if ( crlfRange.location == location )
+			{
+				ALEXLog(@"header end");
+				break;
+			}
+			
+			NSUInteger lineLength = crlfRange.location-lineBeginning;
+			
+#warning this can change for subparts? use data instead?
+			NSStringEncoding stringEncoding = NSASCIIStringEncoding;
+			NSString *line = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(lineBeginning, lineLength)] encoding:stringEncoding];
+			
+			/*
+			if ( [line length] < 600 )
+				ALEXLog(@"line: %@", line);
+			else
+				ALEXLog(@"line length: %u", [line length]);
+			*/
+			
+			if ( [wsCS characterIsMember:[line characterAtIndex:0]] )
+			{
+				if ( ![unfoldedHeaderFields count] )
+				{
+					ALEXLog(@"parsing error, whitespace at beginning of data");
+					break;
+				}
+				
+				[unfoldedHeaderFields replaceObjectAtIndex:([unfoldedHeaderFields count]-1) withObject:[[unfoldedHeaderFields lastObject] stringByAppendingString:line]];
+			}
+			else
+			{
+				[unfoldedHeaderFields addObject:line];
+			}
+			
+			
+			location += lineLength+2;
+		}
+		
+		
+		NSMutableDictionary *headerFieldsDictionary = [NSMutableDictionary dictionaryWithCapacity:[unfoldedHeaderFields count]];
+		
+		// could also do this with nsdata, necessary?
+		for ( NSString* headerField in unfoldedHeaderFields )
+		{
+			NSRange range = [headerField rangeOfString:ALEXMIMETools_Colon];
+			if ( range.location == NSNotFound )
+			{
+				ALEXLog(@"parsing error, no colon (':') in header field: %@", headerField);
+			}
+			
+			NSString *fieldName = [headerField substringToIndex:range.location];
+			NSString *fieldBody = [headerField substringFromIndex:range.location+range.length];
+			
+			ALEXLogObject(fieldName);
+			ALEXLogObject(fieldBody);
+			
+		}
+		
+		
+		
+		
+		
+		[self ALEXMIMEParserDelegate_didEndHeaderSection];
+		
+		ALEXLogObject(unfoldedHeaderFields);
+		
+		// TODO: deep copy?
+		//[self ALEXMIMEParserDelegate_foundHeaderSection:[headerSection copy]];
+		
+		/*
 		NSUInteger headerSectionBoundaryLocation = [data rangeOfData:[ALEXMIMETools_CRLF ALEXMIMETools_CRLF dataUsingEncoding:NSASCIIStringEncoding] options:0 range:NSMakeRange(location, [data length])].location;
 		
 		if ( headerSectionBoundaryLocation == NSNotFound )
 		{
-			NSLog(@"parsing error: headerBoundaryLocation == NSNotFound");
+			ALEXLog(@"parsing error: headerBoundaryLocation == NSNotFound");
 			return NO;
 		}
 		
@@ -87,12 +192,13 @@
 		
 		[self ALEXMIMEParserDelegate_foundHeaderSection:headerSection];
 		
-		
 		bodyRange = NSMakeRange(headerSectionBoundaryLocation + headerSectionBoundarySize, [data length] - headerSectionBoundaryLocation - headerSectionBoundarySize);
+		*/
 	}
 	
 //TODO: some decoding might have to happen here, like base64
 	
+	/*
 	NSString *contentType	= [headerSection objectForKey:@"Content-Type"];
 	
 	if ( ![[contentType ALEXMIMETools_firstValueInHeaderField] hasPrefix:@"multipart/"] )
@@ -115,6 +221,7 @@
 	}
 	
 	[self ALEXMIMEParserDelegate_didEndEntity];
+	*/
 	
 	return YES;
 }
@@ -123,7 +230,7 @@
 
 - (void) ALEXMIMEParserDelegate_didStartEntity
 {
-	if ( [self.delegate respondsToSelector:@selector(parserDidStartEntity::)] )
+	if ( [self.delegate respondsToSelector:@selector(parserDidStartEntity:)] )
 		[self.delegate parserDidStartEntity:self];
 	
 	/*
@@ -140,14 +247,29 @@
 
 - (void) ALEXMIMEParserDelegate_didEndEntity
 {
-	if ( [self.delegate respondsToSelector:@selector(parserDidEndEntity::)] )
+	if ( [self.delegate respondsToSelector:@selector(parserDidEndEntity:)] )
 		[self.delegate parserDidEndEntity:self];
 }
 
-- (void) ALEXMIMEParserDelegate_foundHeader:(NSDictionary*)header
+- (void) ALEXMIMEParserDelegate_didStartHeaderSection
 {
-	if ( [self.delegate respondsToSelector:@selector(parser:foundHeader:)] )
-		[self.delegate parser:self foundHeader:header];
+	if ( [self.delegate respondsToSelector:@selector(parserDidStartHeaderSection:)] )
+		[self.delegate parserDidStartHeaderSection:self];
+}
+
+
+- (void) ALEXMIMEParserDelegate_didEndHeaderSection
+{
+	if ( [self.delegate respondsToSelector:@selector(parserDidEndHeaderSection:)] )
+		[self.delegate parserDidEndHeaderSection:self];
+}
+
+
+
+- (void) ALEXMIMEParserDelegate_foundHeaderSection:(NSDictionary*)header
+{
+	if ( [self.delegate respondsToSelector:@selector(parser:foundHeaderSection:)] )
+		[self.delegate parser:self foundHeaderSection:header];
 	
 	/*
 	 if ( self.foundHeaderHandler )

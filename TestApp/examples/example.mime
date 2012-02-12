@@ -1,0 +1,27 @@
+Content-Type: multipart/related;boundary="abc123"
+
+--abc123
+content-type: application/json
+
+{"body":"This is a body.",
+"_attachments":{
+  "foo.txt": {
+    "follows":true,
+    "content_type":"text/plain",
+    "length":21
+    },
+  "bar.txt": {
+    "follows":true,
+    "content_type":"text/plain",
+    "length":20
+    },
+  }
+}
+  
+--abc123
+
+this is 21 chars long
+--abc123
+
+this is 20 chars lon
+--abc123--

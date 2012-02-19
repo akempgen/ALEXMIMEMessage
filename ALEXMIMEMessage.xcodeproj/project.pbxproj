@@ -13,8 +13,8 @@
 		C214AFCA14DAD9B7001E706A /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C214AFC814DAD9B7001E706A /* Credits.rtf */; };
 		C214AFCD14DAD9B7001E706A /* ALEXAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C214AFCC14DAD9B7001E706A /* ALEXAppDelegate.m */; };
 		C214AFD014DAD9B7001E706A /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = C214AFCE14DAD9B7001E706A /* MainMenu.xib */; };
-		C21C586314E487140072E56A /* jasper.mime in Resources */ = {isa = PBXBuildFile; fileRef = C21C586214E487140072E56A /* jasper.mime */; };
 		C21C586514E532BC0072E56A /* example.mime in Resources */ = {isa = PBXBuildFile; fileRef = C21C586414E532BC0072E56A /* example.mime */; };
+		C28B940614EA7153004BEE84 /* NSString+ALEXMIMEMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C2A7519114E690F700F87383 /* NSString+ALEXMIMEMessage.m */; };
 		C2D0674914E61C5700897EA3 /* ALEXMIMEMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = C2D0674814E61C5700897EA3 /* ALEXMIMEMessage.m */; };
 /* End PBXBuildFile section */
 
@@ -32,15 +32,14 @@
 		C214AFCB14DAD9B7001E706A /* ALEXAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ALEXAppDelegate.h; sourceTree = "<group>"; };
 		C214AFCC14DAD9B7001E706A /* ALEXAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ALEXAppDelegate.m; sourceTree = "<group>"; };
 		C214AFCF14DAD9B7001E706A /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		C21C586214E487140072E56A /* jasper.mime */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; lineEnding = 2; path = jasper.mime; sourceTree = "<group>"; };
 		C21C586414E532BC0072E56A /* example.mime */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; lineEnding = 2; path = example.mime; sourceTree = "<group>"; };
 		C28709C414DE9FC300BB6072 /* ALEXMIMEDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALEXMIMEDefinitions.h; path = ../ALEXMIMEMessage/ALEXMIMEDefinitions.h; sourceTree = "<group>"; };
 		C2A7518C14E690F700F87383 /* ALEXMIMEParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALEXMIMEParser.h; sourceTree = "<group>"; };
 		C2A7518D14E690F700F87383 /* ALEXMIMEParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALEXMIMEParser.m; sourceTree = "<group>"; };
 		C2A7518E14E690F700F87383 /* NSObject+ALEXDelegation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+ALEXDelegation.h"; sourceTree = "<group>"; };
 		C2A7518F14E690F700F87383 /* NSObject+ALEXDelegation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+ALEXDelegation.m"; sourceTree = "<group>"; };
-		C2A7519014E690F700F87383 /* NSString+ALEXMIMETools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ALEXMIMETools.h"; sourceTree = "<group>"; };
-		C2A7519114E690F700F87383 /* NSString+ALEXMIMETools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ALEXMIMETools.m"; sourceTree = "<group>"; };
+		C2A7519014E690F700F87383 /* NSString+ALEXMIMEMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ALEXMIMEMessage.h"; sourceTree = "<group>"; };
+		C2A7519114E690F700F87383 /* NSString+ALEXMIMEMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ALEXMIMEMessage.m"; sourceTree = "<group>"; };
 		C2D0674514E614A600897EA3 /* ALEXLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALEXLog.h; sourceTree = "<group>"; };
 		C2D0674714E61C5700897EA3 /* ALEXMIMEMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALEXMIMEMessage.h; sourceTree = "<group>"; };
 		C2D0674814E61C5700897EA3 /* ALEXMIMEMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALEXMIMEMessage.m; sourceTree = "<group>"; };
@@ -126,6 +125,8 @@
 			children = (
 				C2D0674714E61C5700897EA3 /* ALEXMIMEMessage.h */,
 				C2D0674814E61C5700897EA3 /* ALEXMIMEMessage.m */,
+				C2A7519014E690F700F87383 /* NSString+ALEXMIMEMessage.h */,
+				C2A7519114E690F700F87383 /* NSString+ALEXMIMEMessage.m */,
 			);
 			path = ALEXMIMEMessage;
 			sourceTree = "<group>";
@@ -133,7 +134,6 @@
 		C21C586014E486F50072E56A /* examples */ = {
 			isa = PBXGroup;
 			children = (
-				C21C586214E487140072E56A /* jasper.mime */,
 				C21C586414E532BC0072E56A /* example.mime */,
 			);
 			path = examples;
@@ -147,8 +147,6 @@
 				C2A7518D14E690F700F87383 /* ALEXMIMEParser.m */,
 				C2A7518E14E690F700F87383 /* NSObject+ALEXDelegation.h */,
 				C2A7518F14E690F700F87383 /* NSObject+ALEXDelegation.m */,
-				C2A7519014E690F700F87383 /* NSString+ALEXMIMETools.h */,
-				C2A7519114E690F700F87383 /* NSString+ALEXMIMETools.m */,
 			);
 			path = _Experiments;
 			sourceTree = "<group>";
@@ -179,7 +177,7 @@
 		C214AFAC14DAD9B7001E706A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Alexander Kempgen";
 			};
 			buildConfigurationList = C214AFAF14DAD9B7001E706A /* Build configuration list for PBXProject "ALEXMIMEMessage" */;
@@ -207,7 +205,6 @@
 				C214AFC414DAD9B7001E706A /* InfoPlist.strings in Resources */,
 				C214AFCA14DAD9B7001E706A /* Credits.rtf in Resources */,
 				C214AFD014DAD9B7001E706A /* MainMenu.xib in Resources */,
-				C21C586314E487140072E56A /* jasper.mime in Resources */,
 				C21C586514E532BC0072E56A /* example.mime in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -222,6 +219,7 @@
 				C214AFC614DAD9B7001E706A /* main.m in Sources */,
 				C214AFCD14DAD9B7001E706A /* ALEXAppDelegate.m in Sources */,
 				C2D0674914E61C5700897EA3 /* ALEXMIMEMessage.m in Sources */,
+				C28B940614EA7153004BEE84 /* NSString+ALEXMIMEMessage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

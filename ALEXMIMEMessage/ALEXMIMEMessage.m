@@ -8,7 +8,24 @@
 
 #import "ALEXMIMEMessage.h"
 
+#import "NSString+ALEXMIMEMessage.h"
 
+
+
+
+
+
+NSString *const ALEXMIMEHeaderNameMIMEVersion				= @"MIME-Version";
+NSString *const ALEXMIMEHeaderNameContentType				= @"Content-Type";
+NSString *const ALEXMIMEHeaderNameContentTransferEncoding	= @"Content-Type-Encoding";
+
+
+NSString *const ALEXMIMEContentTypeMultipart					= @"multipart";
+NSString *const ALEXMIMEContentTypeMultipartSubtypeAlternative	= @"alternative";
+NSString *const ALEXMIMEContentTypeMultipartSubtypeMixed		= @"mixed";
+
+
+NSString *const ALEXMIMEContentTypeMultipartParameterBoundary	= @"boundary";
 
 
 @interface ALEXMIMEMessage ()
@@ -16,7 +33,9 @@
 @property (nonatomic, copy, readwrite)	NSDictionary	*headerFields;
 @property (nonatomic, copy, readwrite)	id				objectValue;
 
-@property (nonatomic, copy, readwrite)	NSArray			*subparts;
+
+@property (nonatomic, assign, readwrite)	BOOL			isMultipart;
+
 
 @end
 
@@ -26,7 +45,7 @@
 @synthesize headerFields	= _headerFields;
 @synthesize objectValue		= _objectValue;
 
-@synthesize subparts		= _subparts;
+@synthesize isMultipart		= _isMultipart;
 
 
 - (id) initWithHeaderFields:(NSDictionary*)headerFields objectValue:(id)objectValue
@@ -40,12 +59,16 @@
 		// do some parsing? converting to image? store this at all?
 		self.objectValue	= objectValue;
 		
+		if ( [objectValue isKindOfClass:[NSArray class]] )
+			self.isMultipart = YES;
+		
+		
 		// return a different subclass depending on headers and object value?
+		
 		
 	}
 	return self;
 }
-
 
 
 
@@ -89,13 +112,14 @@
 
 - (id) initWithData:(NSData *)messageData messageRange:(NSRange)messageRange
 {
-	ALEXLogObject([messageData subdataWithRange:messageRange]);
+	//ALEXLogDataAsASCIIString(messageData);
+	//ALEXLogDataAsASCIIString([messageData subdataWithRange:messageRange]);
 	
 	NSCharacterSet *wsCS = [NSCharacterSet whitespaceCharacterSet];
 	
 	NSUInteger location = messageRange.location;
 	NSUInteger dataLength = messageRange.length;
-		
+	
 	NSMutableArray *unfoldedHeaderFields = [NSMutableArray array];
 	
 	
@@ -113,14 +137,15 @@
 		
 		if ( crlfRange.location == NSNotFound )
 		{
-			ALEXLog(@"not found");
-			break;
+			ALEXLog(@"parsing error, no header found, not even a crlf");
+			return nil;
 		}
 		
 		
 		if ( crlfRange.location == location )
 		{
 			ALEXLog(@"header end");
+			location += 2;
 			break;
 		}
 		
@@ -166,11 +191,9 @@
 		}
 		
 		NSString *fieldName = [headerField substringToIndex:range.location];
-		NSString *fieldBody = [headerField substringFromIndex:range.location+range.length];
+		NSString *fieldBody = [[headerField substringFromIndex:range.location+range.length] stringByTrimmingCharactersInSet:wsCS];
 		
-		ALEXLogObject(fieldName);
-		ALEXLogObject(fieldBody);
-		
+		[headerFieldsDictionary setObject:fieldBody forKey:fieldName];
 	}
 	
 	
@@ -180,10 +203,136 @@
 
 - (id) initWithHeaderFields:(NSDictionary*)headerFields data:(NSData *)messageData bodyRange:(NSRange)bodyRange
 {
-	ALEXLogObject([messageData subdataWithRange:bodyRange]);
+	id objectValue = nil;
+	
+	//ALEXLogDataAsASCIIString([messageData subdataWithRange:bodyRange]);
+	
+	NSString *contentType = [headerFields objectForKey:ALEXMIMEHeaderNameContentType];
+	//ALEXLogObject(contentType);
+	NSString *mediaType = [[contentType ALEXMIMEMessage_firstValueInHeaderField] lowercaseString];
+	//ALEXLogObject(mediaType);
+	
+	if ( [mediaType hasPrefix:ALEXMIMEContentTypeMultipart] )
+	{
+		NSMutableArray *subparts = [NSMutableArray array];
+		
+		
+		
+		NSString *boundary = [contentType ALEXMIMEMessage_valueInHeaderFieldForKey:ALEXMIMEContentTypeMultipartParameterBoundary];
+		ALEXLogObject(boundary);
+		
+		
+		NSData *boundaryData = [[ALEXMIMEMessage_CRLF ALEXMIMEMessage_DoubleHyphen stringByAppendingString:boundary] dataUsingEncoding:NSASCIIStringEncoding];
+		
+		
+		//ALEXLogDataAsASCIIString([messageData subdataWithRange:bodyRange]);
+		
+		while ( NO )
+		{
+			
+			ALEXLog(@"bodyRange.location: %u .length %u", bodyRange.location, bodyRange.length);
+			
+			NSRange boundaryRange = [messageData rangeOfData:boundaryData options:0 range:bodyRange];
+			ALEXLog(@"boundaryRange.location: %u .length %u", boundaryRange.location, boundaryRange.length);
+			
+			//NSData *partData = [messageData subdataWithRange:partRange];
+			//ALEXLogObject(partData);
+			
+			
+		}
+		
+		
+		objectValue = subparts;
+	}
+	
+	// do other parsing here, like creating nsimages
 	
 	
-	return nil;
+	
+	return [self initWithHeaderFields:headerFields objectValue:objectValue];
+}
+
+@end
+
+
+
+
+@implementation ALEXMIMEMessage (ALEXMIMESerialization)
+
+- (NSMutableURLRequest*) mutableURLRequestWithURL:(NSURL*)URL
+{
+	NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:URL];
+	
+	NSDictionary *HTTPHeaderFields;
+	NSData *httpBody = [self MIMEDataWithOptions:ALEXMIMESerializationCreateHTTPHeaders headerFields:&HTTPHeaderFields];
+	
+	[urlRequest setAllHTTPHeaderFields:HTTPHeaderFields];
+	[urlRequest setHTTPBody:httpBody];
+	
+	return urlRequest;
+}
+
+- (NSData*) MIMEData
+{
+	return [self MIMEDataWithOptions:ALEXMIMESerializationDefaultOptions];
+}
+
+- (NSData*) MIMEDataWithOptions:(ALEXMIMESerializationOptions)options
+{
+	return [self MIMEDataWithOptions:options headerFields:NULL];
+}
+
+
+- (NSData*) MIMEDataWithOptions:(ALEXMIMESerializationOptions)options headerFields:(NSDictionary**)outHeaderFields
+{
+	NSMutableData *MIMEData = [NSMutableData data];
+	
+	if ( outHeaderFields )
+	{
+		*outHeaderFields = [self.headerFields copy];
+	}
+	else
+	{
+		
+		NSMutableArray *foldedHeaderFields = [NSMutableArray arrayWithCapacity:[self.headerFields count]];
+		for (NSString *headerName in self.headerFields)
+		{
+			NSUInteger maxLineLength = 80; // should be configurable through options
+			
+			
+			NSString *line = [NSString stringWithFormat:@"%@: %@", headerName, [self.headerFields objectForKey:headerName]];
+			if ( [line length] < maxLineLength )
+			{
+				[foldedHeaderFields addObject:line];
+			}
+			else
+			{
+				// header field folding
+				NSMutableArray *lines = [NSMutableArray arrayWithCapacity:[line length]/ maxLineLength];
+				
+				// this might not be correct, check rfcs. it's definately not the preferred way, because it does not fold at syntactical borders
+				NSUInteger searchLocation = 0;
+				
+				// loop
+				NSRange lastWhitespaceRange = [line rangeOfCharacterFromSet:[NSCharacterSet whitespaceCharacterSet] options:NSBackwardsSearch range:NSMakeRange(searchLocation, maxLineLength)];
+				
+				[lines addObject:[line substringWithRange:NSMakeRange(searchLocation, searchLocation + lastWhitespaceRange.location)]];
+				searchLocation += lastWhitespaceRange.location;
+				// end loop
+				
+				
+				[foldedHeaderFields addObjectsFromArray:lines];
+			}
+		}
+		
+		NSString *headerSection = [foldedHeaderFields componentsJoinedByString:ALEXMIMEMessage_CRLF];
+		
+		[MIMEData appendData:[headerSection dataUsingEncoding:NSASCIIStringEncoding]];
+		[MIMEData appendData:[ALEXMIMEMessage_CRLF ALEXMIMEMessage_CRLF dataUsingEncoding:NSASCIIStringEncoding]];
+	}
+	
+	
+	return MIMEData;
 }
 
 

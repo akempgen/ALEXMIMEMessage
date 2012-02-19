@@ -3,7 +3,7 @@
 //  MIMEMessage
 //
 //  Created by Alexander Kempgen on 02.02.12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Copyright (c) 2012 Alexander Kempgen. All rights reserved.
 //
 
 #import <Cocoa/Cocoa.h>

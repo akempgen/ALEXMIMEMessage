@@ -1,16 +1,16 @@
 //
-//  NSString+ALEXMIMETools.m
-//  MIMEMessage
+//  NSString+ALEXMIMEMessage.m
+//  ALEXMIMEMessage
 //
 //  Created by Alexander Kempgen on 05.02.12.
 //  Copyright (c) 2012 Alexander Kempgen. All rights reserved.
 //
 
-#import "NSString+ALEXMIMETools.h"
+#import "NSString+ALEXMIMEMessage.h"
 
-@implementation NSString (ALEXMIMETools)
+@implementation NSString (ALEXMIMEMessage)
 
-- (NSDictionary*) ALEXMIMETools_headerFields
+- (NSDictionary*) ALEXMIMEMessage_headerFields
 {
 	NSMutableDictionary *fields	= [NSMutableDictionary dictionary];
 	for ( NSString *line in [self componentsSeparatedByString:@"\r\n"] )
@@ -32,7 +32,7 @@
 }
 
 
-- (NSString*) ALEXMIMETools_firstValueInHeaderField
+- (NSString*) ALEXMIMEMessage_firstValueInHeaderField
 {
 	NSUInteger location = [self rangeOfString:@";"].location;
 	NSString *value;
@@ -44,7 +44,7 @@
 }
 
 
-- (NSString*) ALEXMIMETools_valueInHeaderFieldForKey:(NSString*)key
+- (NSString*) ALEXMIMEMessage_valueInHeaderFieldForKey:(NSString*)key
 {
 	// Content-Type of a multipart msg:
 	// multipart/related; type="text/xml"; start="<4C63F0A0988D8EFCCA90038F5E981D5F>"; 	boundary="----=_Part_23_1584902333.1316137295808"

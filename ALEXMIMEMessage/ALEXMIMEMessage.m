@@ -14,7 +14,6 @@
 
 
 
-
 NSString *const ALEXMIMEHeaderNameMIMEVersion				= @"MIME-Version";
 NSString *const ALEXMIMEHeaderNameContentType				= @"Content-Type";
 NSString *const ALEXMIMEHeaderNameContentTransferEncoding	= @"Content-Type-Encoding";
@@ -112,8 +111,7 @@ NSString *const ALEXMIMEContentTypeMultipartParameterBoundary	= @"boundary";
 
 - (id) initWithData:(NSData *)messageData messageRange:(NSRange)messageRange
 {
-	//ALEXLogDataAsASCIIString(messageData);
-	//ALEXLogDataAsASCIIString([messageData subdataWithRange:messageRange]);
+	ALEXLogDataAsASCIIString([messageData subdataWithRange:messageRange]);
 	
 	NSCharacterSet *wsCS = [NSCharacterSet whitespaceCharacterSet];
 	
@@ -151,7 +149,7 @@ NSString *const ALEXMIMEContentTypeMultipartParameterBoundary	= @"boundary";
 		
 		NSUInteger lineLength = crlfRange.location-lineBeginning;
 		
-#warning this can change for subparts? use data instead?
+//#warning this can change for subparts? use data instead?
 		NSStringEncoding stringEncoding = NSUTF8StringEncoding;
 		NSString *line = [[NSString alloc] initWithData:[messageData subdataWithRange:NSMakeRange(lineBeginning, lineLength)] encoding:stringEncoding];
 		
@@ -203,9 +201,12 @@ NSString *const ALEXMIMEContentTypeMultipartParameterBoundary	= @"boundary";
 
 - (id) initWithHeaderFields:(NSDictionary*)headerFields data:(NSData *)messageData bodyRange:(NSRange)bodyRange
 {
+	NSParameterAssert(headerFields != nil);
+	NSParameterAssert(messageData != nil);
+	
 	id objectValue = nil;
 	
-	//ALEXLogDataAsASCIIString([messageData subdataWithRange:bodyRange]);
+	ALEXLogDataAsASCIIString([messageData subdataWithRange:bodyRange]);
 	
 	NSString *contentType = [headerFields objectForKey:ALEXMIMEHeaderNameContentType];
 	//ALEXLogObject(contentType);
@@ -225,26 +226,55 @@ NSString *const ALEXMIMEContentTypeMultipartParameterBoundary	= @"boundary";
 		NSData *boundaryData = [[ALEXMIMEMessage_CRLF ALEXMIMEMessage_DoubleHyphen stringByAppendingString:boundary] dataUsingEncoding:NSASCIIStringEncoding];
 		
 		
-		//ALEXLogDataAsASCIIString([messageData subdataWithRange:bodyRange]);
+		ALEXLogDataAsASCIIString([messageData subdataWithRange:bodyRange]);
 		
-		while ( NO )
+		NSUInteger location = bodyRange.location;
+		NSUInteger bodyLength = bodyRange.length;
+		while ( bodyLength > 0 )
 		{
 			
 			ALEXLog(@"bodyRange.location: %u .length %u", bodyRange.location, bodyRange.length);
 			
-			NSRange boundaryRange = [messageData rangeOfData:boundaryData options:0 range:bodyRange];
+			NSRange boundaryRange = [messageData rangeOfData:boundaryData options:0 range:NSMakeRange(location, bodyLength)];
 			ALEXLog(@"boundaryRange.location: %u .length %u", boundaryRange.location, boundaryRange.length);
+			/*
+			NSData *partData = [messageData subdataWithRange:NSMakeRange(location, boundaryRange.location-location)];
 			
-			//NSData *partData = [messageData subdataWithRange:partRange];
-			//ALEXLogObject(partData);
 			
+			ALEXLogDataAsASCIIString(partData);
+			*/
+			
+			
+			ALEXMIMEMessage *subpart = [[ALEXMIMEMessage alloc] initWithData:messageData messageRange:NSMakeRange(location, boundaryRange.location-location)];
+			if (subpart) {
+				[subparts addObject:subpart];
+			}
+			
+			
+			bodyLength -= (boundaryRange.location + boundaryRange.length -location);
+			location = boundaryRange.location + boundaryRange.length;
+#warning whitespace +crlf überspringen
+			
+			NSRange doubleHyphenRange = [messageData rangeOfData:[ALEXMIMEMessage_DoubleHyphen dataUsingEncoding:NSASCIIStringEncoding] options:0 range:NSMakeRange(location, 2)];
+			if ( doubleHyphenRange.location != NSNotFound )
+				break;
+			
+			NSRange crlfRange = [messageData rangeOfData:[ALEXMIMEMessage_CRLF dataUsingEncoding:NSASCIIStringEncoding] options:0 range:NSMakeRange(location, bodyLength)];
+			
+			bodyLength -= (crlfRange.location + crlfRange.length -location);
+			location = crlfRange.location + crlfRange.length;
 			
 		}
 		
 		
 		objectValue = subparts;
 	}
-	
+	else
+	{
+		//objectValue = [messageData subdataWithRange:bodyRange];
+		NSString *string = [[NSString alloc] initWithData:[messageData subdataWithRange:bodyRange] encoding:NSUTF8StringEncoding];
+		objectValue = [string stringByReplacingOccurrencesOfString:ALEXMIMEMessage_CRLF withString:@"  »  "];
+	}
 	// do other parsing here, like creating nsimages
 	
 	

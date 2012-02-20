@@ -62,6 +62,7 @@
 		 NSString *source = [[NSString alloc] initWithData:message encoding:NSASCIIStringEncoding];
 		 [self.sourceTextField setStringValue:source];
 		 
+		 
 		 ALEXMIMEMessage *MIMEMessage = [[ALEXMIMEMessage alloc] initWithData:message];
 		 
 		 ALEXLogObject(MIMEMessage);

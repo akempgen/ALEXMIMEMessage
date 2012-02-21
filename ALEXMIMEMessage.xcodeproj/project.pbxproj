@@ -36,8 +36,6 @@
 		C28709C414DE9FC300BB6072 /* ALEXMIMEDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ALEXMIMEDefinitions.h; path = ../ALEXMIMEMessage/ALEXMIMEDefinitions.h; sourceTree = "<group>"; };
 		C2A7518C14E690F700F87383 /* ALEXMIMEParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALEXMIMEParser.h; sourceTree = "<group>"; };
 		C2A7518D14E690F700F87383 /* ALEXMIMEParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ALEXMIMEParser.m; sourceTree = "<group>"; };
-		C2A7518E14E690F700F87383 /* NSObject+ALEXDelegation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+ALEXDelegation.h"; sourceTree = "<group>"; };
-		C2A7518F14E690F700F87383 /* NSObject+ALEXDelegation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+ALEXDelegation.m"; sourceTree = "<group>"; };
 		C2A7519014E690F700F87383 /* NSString+ALEXMIMEMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+ALEXMIMEMessage.h"; sourceTree = "<group>"; };
 		C2A7519114E690F700F87383 /* NSString+ALEXMIMEMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+ALEXMIMEMessage.m"; sourceTree = "<group>"; };
 		C2D0674514E614A600897EA3 /* ALEXLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ALEXLog.h; sourceTree = "<group>"; };
@@ -145,8 +143,6 @@
 				C28709C414DE9FC300BB6072 /* ALEXMIMEDefinitions.h */,
 				C2A7518C14E690F700F87383 /* ALEXMIMEParser.h */,
 				C2A7518D14E690F700F87383 /* ALEXMIMEParser.m */,
-				C2A7518E14E690F700F87383 /* NSObject+ALEXDelegation.h */,
-				C2A7518F14E690F700F87383 /* NSObject+ALEXDelegation.m */,
 			);
 			path = _Experiments;
 			sourceTree = "<group>";

@@ -1324,7 +1324,7 @@
 										<object class="NSTextField" id="552487036">
 											<reference key="NSNextResponder" ref="179773046"/>
 											<int key="NSvFlags">274</int>
-											<string key="NSFrameSize">{396, 672}</string>
+											<string key="NSFrameSize">{396, 650}</string>
 											<reference key="NSSuperview" ref="179773046"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="356634609"/>
@@ -1364,7 +1364,7 @@
 											</object>
 										</object>
 									</array>
-									<string key="NSFrameSize">{396, 672}</string>
+									<string key="NSFrameSize">{396, 650}</string>
 									<reference key="NSSuperview" ref="551452395"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="552487036"/>
@@ -1385,7 +1385,7 @@
 														<object class="NSOutlineView" id="896951442">
 															<reference key="NSNextResponder" ref="35035542"/>
 															<int key="NSvFlags">256</int>
-															<string key="NSFrameSize">{396, 670}</string>
+															<string key="NSFrameSize">{396, 648}</string>
 															<reference key="NSSuperview" ref="35035542"/>
 															<reference key="NSWindow"/>
 															<reference key="NSNextKeyView" ref="125486177"/>
@@ -1474,7 +1474,7 @@
 															<int key="NSTableViewGroupRowStyle">1</int>
 														</object>
 													</array>
-													<string key="NSFrame">{{1, 1}, {396, 670}}</string>
+													<string key="NSFrame">{{1, 1}, {396, 648}}</string>
 													<reference key="NSSuperview" ref="515509394"/>
 													<reference key="NSWindow"/>
 													<reference key="NSNextKeyView" ref="896951442"/>
@@ -1509,7 +1509,7 @@
 													<double key="NSPercent">0.9974811083123426</double>
 												</object>
 											</array>
-											<string key="NSFrameSize">{398, 672}</string>
+											<string key="NSFrameSize">{398, 650}</string>
 											<reference key="NSSuperview" ref="356634609"/>
 											<reference key="NSWindow"/>
 											<reference key="NSNextKeyView" ref="35035542"/>
@@ -1521,7 +1521,7 @@
 											<bytes key="NSScrollAmts">QSAAAEEgAABCEAAAQhAAAA</bytes>
 										</object>
 									</array>
-									<string key="NSFrame">{{406, 0}, {398, 672}}</string>
+									<string key="NSFrame">{{406, 0}, {398, 650}}</string>
 									<reference key="NSSuperview" ref="551452395"/>
 									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="515509394"/>
@@ -1529,7 +1529,7 @@
 									<string key="NSClassName">NSView</string>
 								</object>
 							</array>
-							<string key="NSFrameSize">{804, 672}</string>
+							<string key="NSFrame">{{0, 22}, {804, 650}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="179773046"/>
@@ -1545,6 +1545,8 @@
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
+				<bool key="NSAutorecalculatesContentBorderThicknessMinY">NO</bool>
+				<double key="NSContentBorderThicknessMinY">22</double>
 				<bool key="NSWindowIsRestorable">YES</bool>
 			</object>
 			<object class="NSCustomObject" id="976324537">
